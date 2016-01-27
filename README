@@ -1,0 +1,30 @@
+This is code for the paper "Zero-shot learning with unreliable attributes" by Dinesh Jayaraman and Kristen Grauman, NIPS 2014.
+
+demo.m shows how to use the main function zeroshot().
+lib/ contains codes implementing the random forest and other utility functions and classes.
+
+The random forest handling uncertainties is built on top of a basic random forest implementation downloaded from https://github.com/karpathy/Random-Forest-Matlab.git in early 2014.
+
+Main parameters to pass to zeroshot() are:
+============================================
+--pretrain_data - name of a matfile with pre-trained attribute classifier scores etc.  (details below)
+--RFtrees - # trees in a forest
+--RFvarsPerNode - # variables evaluated at each node
+--RFsplitsPerVar - # splits evaluated for each variable selected at a node i.e number of thresholds sampled for each variable. so total number of evaluated splits = RFvarsPerNode * RFsplitsPerVar
+--RFdepth - # max number of levels allowed in the random forest
+--flipFrac - estimated percentage of false positive annotations (for label flipping)
+
+see parseArgs() for other parameters
+
+Structure of pretrain_data matfile
+============================================
+cont_attributematrix: NXM double array (N samples, M attributes) with attribute annotations
+attributematrix: NxM double array (thresholded, binarized 0-1 version of cont_attributematrix)
+attributes
+class_attrib_mat: contains two CxM double arrays (C categories) - (1) mean and (2) annot, containing continuous and binary class-attribute associations.
+classes: Nx1 double array containing class index (1 through C)
+classnames: Cx1 cell array containing strings corresponding to each class (can be dummy)
+trainingInd, valInd, testingInd: column vectors ( double) containing indices (starting from 1) specifying training, validation and testing split.
+attrConf: confidence scores of attribute classifiers
+attrPred: thresholded (0-1) confidence scores of attribute classifiers
+val_featRes: 1xM binClassRes array (see lib/@binClassRes class and lib/evalbinPreds.m) containing validation data performance metrics for all M classifers (TODO: get rid of binClassRes dependency)
